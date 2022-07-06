@@ -9,30 +9,47 @@ use Illuminate\Http\Request;
 class ShopController extends Controller
 {
 
-    public function createFreeShop(Request $request)
+    public function createShop(Request $request)
     {
         try{
             $user = User::find(\Auth::user()->id);
 
+            $data = $request->validate([
+                'shop' => 'required|max:255|unique:shop'
+            ]);
+
             if(count($user->shops()->get()) < 1) {
                 Shop::create([
-                    'shop' => $request->get('shop'),
+                    'shop' => $data['shop'],
                     'user' => \Auth::user()->id,
-                    'max_prod' => 5,
+                    'max_prod' => 50,
                 ]);
             } else {
-                return "User already have a free shop!";
+                return response("User already have a shop!", 201);
             }
-            return 201;
+            return response("Shop created!",201);
         } catch (\Throwable $exception) {
-            abort(500, $exception->getMessage());
+            return response($exception->getMessage(), 500);
         }
     }
 
-    public function list()
+    public function listAllShops()
     {
-        $user = User::find(\Auth::user()->id);
-        return $user->shops()->get();
+        try {
+            return Shop::all();
+        } catch (\Throwable $exception) {
+            return response($exception->getMessage(), 500);
+        }
+    }
+
+    public function listUserShop()
+    {
+        try{
+            $user = User::find(\Auth::user()->id);
+            return $user->shops()->get();
+        } catch (\Throwable $exception) {
+            return response($exception->getMessage(), 500);
+        }
     }
 
 }

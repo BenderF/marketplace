@@ -22,11 +22,17 @@ Route::post('signup', [ApiAuthController::class, 'sign_up']);
 Route::post('login', [ApiAuthController::class, 'login']);
 
 Route::group(['prefix' => '/shop', 'middleware' => ['auth:sanctum', 'ability:user']], function () {
-    Route::post('create-freeshop', [ShopController::class, 'createFreeShop']);
-    Route::get('list', [ShopController::class, 'list']);
+    Route::post('create-shop', [ShopController::class, 'createShop']);
+    Route::get('list-shop', [ShopController::class, 'listUserShop']);
 });
 
 Route::group(['prefix' => '/product', 'middleware' => ['auth:sanctum', 'ability:user']], function () {
     Route::post('insert-product', [ProductController::class, 'insertProductIntoShop']);
+    Route::post('delete-product', [ProductController::class, 'deleteProduct']);
+    Route::post('list-shop-products', [ProductController::class, 'listShopProducts']);
+});
+
+Route::group(['prefix' => '/admin', 'middleware' => ['auth:sanctum', 'ability:admin']], function () {
+    Route::get('list-all-shops', [ShopController::class, 'listAllShops']);
 });
 
