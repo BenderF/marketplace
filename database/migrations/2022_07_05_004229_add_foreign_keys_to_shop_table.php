@@ -27,8 +27,8 @@ class AddForeignKeysToShopTable extends Migration
     public function down()
     {
         Schema::table('shop', function (Blueprint $table) {
-            $table->dropForeign('user');
-            $table->dropIndex('user');
+            $table->dropForeign('shop_user_foreign');
+            $table->dropIndex('shop_user_index');
         });
     }
 }

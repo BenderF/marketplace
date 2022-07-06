@@ -18,6 +18,7 @@ class CreateProductTable extends Migration
             $table->string('product', '255');
             $table->string('category', 255);
             $table->integer('stock');
+            $table->decimal('price', 10, 2);
             $table->unsignedBigInteger('shop');
             $table->timestamps();
         });
