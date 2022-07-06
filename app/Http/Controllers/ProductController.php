@@ -60,4 +60,28 @@ class ProductController extends Controller
             return response($exception->getMessage(), 500);
         }
     }
+
+    public function buyProduct(Request $request)
+    {
+        try {
+            $payInfo = new \stdClass();
+            $payInfo->client = $request->get('payInfo'); //Receives a json with an object containing payment related info
+            $product = Product::find($request->get('product_id'));
+            $payInfo->price = $product->price;
+
+            $payment = new PaymentController();
+            $payment->creditCardPay($payInfo); //Return a bool
+
+            $stockUpdate = (($product->stock) - 1);
+
+            if($payment && ($product->stock > 0)) {
+                $product->update(['stock' => $stockUpdate]);
+                return response("Product sold!", 201);
+            }
+
+        } catch (\Throwable $exception) {
+            return response($exception->getMessage(), 500);
+        }
+
+    }
 }
